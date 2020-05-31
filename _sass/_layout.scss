@@ -19,9 +19,9 @@
 
     .site-header h1 {
         display: block;
-        font-size: 50px !important;
-        line-height: 50px;
-        letter-spacing: 3px;
+        font-size: 2vmin;
+        line-height: 4vmin;
+        letter-spacing: 0.3vmin;
         text-align: center;
         padding-top: 20px;
         clear: both;
@@ -36,9 +36,9 @@
 
     .site-header h2 {
         display: block;
-        font-size: 30px !important;
-        line-height: 50px;
-        letter-spacing: 3px;
+        font-size: 1vmin;
+        line-height: 4vmin;
+        letter-spacing: 0.3vmin;
         text-align: center;
         padding-top: 20px;
         color: #000000;
@@ -53,8 +53,8 @@
     }
 
     .site-header span {
-        border: 10px solid #000000;
-        padding: 0.3em 0.5em;
+        border: 5px solid #000000;
+        padding: 0.1em 0.3em;
         margin: 10px 20px;
         display: inline-block;
 
