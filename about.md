@@ -3,7 +3,6 @@ layout: page
 title: About
 permalink: /about/
 ---
-
 <div>
 <div><strong><font color="#666666"><font size="5">Profile </font><font size="3">[<a href="https://www.dropbox.com/s/zdnd7me7hdo4psq/CV_Junseok_Kim.pdf?dl=0" target="_blank">CV</a>]</font></font></strong></div>
 <ul><li><font color="#666666" size="2">Ph.D. Candidate</font></li>
@@ -119,6 +118,7 @@ permalink: /about/
 <ul><li><span style="color:rgb(102,102,102);background-color:transparent"><font size="2">IEEE WCNC, APCC</font></span></li></ul>
 <li><font size="2">International Journals</font></li>
 <ul><li><font size="2">IEEE Communications Magazine</font></li>
+<li><font size="2">IEEE Communications Standards Magazine</font></li>
 <li><font size="2">IEEE Transactions on Communications</font></li>
 <li><font size="2">IEEE Access</font></li>
 <li><font size="2">IEEE Transactions on Cognitive Communications and Networking</font></li>
