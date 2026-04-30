@@ -1,3 +1,2 @@
-/_site
-.*
-!/.gitignore
+*.code-workspace
+docs/build/
