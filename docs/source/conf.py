@@ -1,14 +1,21 @@
 html_theme = "pydata_sphinx_theme"
 
+html_css_files = ["custom.css"]  
+
 html_theme_options = {
     "github_url": "https://github.com/Kim-Junseok",
-    "linkedin_url": "https://www.linkedin.com/in/junsk",
     "header_links_before_dropdown": 4,
     "navbar_end": ["navbar-icon-links"],
     "footer_start": ["copyright"],
     "footer_end": [],
     "show_prev_next": False,
     "icon_links": [
+        {
+            "name": "LinkedIn",
+            "url": "https://www.linkedin.com/in/junsk",
+            "icon": "fa-brands fa-linkedin",
+            "type": "fontawesome",
+        },
         {
             "name": "Google Scholar",
             "url": "https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en",
