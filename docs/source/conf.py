@@ -1,5 +1,7 @@
 html_theme = "pydata_sphinx_theme"
 
+extensions = ["sphinx_design"]
+
 html_css_files = ["custom.css"]  
 
 html_theme_options = {

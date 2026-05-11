@@ -12,6 +12,7 @@ Junseok Kim
 
    about
    experience
+   publications
    contact
 
 Welcome! I'm a **Cellular Protocol Firmware Engineer** at Samsung Electronics.
@@ -22,6 +23,10 @@ Welcome! I'm a **Cellular Protocol Firmware Engineer** at Samsung Electronics.
        :link: about
        :link-type: doc
 
-    .. grid-item-card:: #xperience
+    .. grid-item-card:: Experience
        :link: experience
+       :link-type: doc
+
+    .. grid-item-card:: Publications
+       :link: publications
        :link-type: doc
