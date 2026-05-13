@@ -10,23 +10,18 @@ Junseok Kim
    :maxdepth: 1
    :hidden:
 
-   about
-   experience
    publications
-   contact
 
-Welcome! I'm a **Cellular Protocol Firmware Engineer** at Samsung Electronics.
+.. container:: home-hero
 
-.. grid:: 2
+   .. container:: home-title
 
-    .. grid-item-card:: About Me
-       :link: about
-       :link-type: doc
+      Cellular Protocol Firmware Engineer
 
-    .. grid-item-card:: Experience
-       :link: experience
-       :link-type: doc
+   .. container:: home-actions
 
-    .. grid-item-card:: Publications
-       :link: publications
-       :link-type: doc
+      .. button-ref:: publications
+         :ref-type: doc
+         :color: info
+
+         Publications
