@@ -15,10 +15,10 @@ This website is where I share technical notes and long-form posts on cellular sy
 
 ### EXPERIENCE
 ---
-Cellular Protocol Firmware Engineer, System LSI, Samsung Electronics, Sep 2020 – Present\
-First Lieutenant, Republic of Korea Army (ROK Army), Mar 2011 – Jun 2013
+- Cellular Protocol Firmware Engineer, System LSI, Samsung Electronics, Sep 2020 -- Present
+- First Lieutenant, Republic of Korea Army (ROK Army), Mar 2011 -- Jun 2013
 
 ### EDUCATION
 ---
-Ph.D. in Electrical and Computer Engineering, Seoul National University, 2020\
-B.S. in Electrical and Electronics Engineering, Chung-Ang University, 2011
+- Ph.D. in Electrical and Computer Engineering, Seoul National University, 2020
+- B.S. in Electrical and Electronics Engineering, Chung-Ang University, 2011
