@@ -23,7 +23,7 @@ social:
     - https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en
     - https://github.com/Kim-Junseok
 
-theme_mode: dark
+theme_mode: 
 
 plugins:
   - jekyll-include-cache
