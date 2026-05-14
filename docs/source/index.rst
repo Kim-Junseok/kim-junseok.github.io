@@ -8,10 +8,7 @@ Junseok Kim
    :maxdepth: 2
    :hidden:
 
-   about
-   experience
    publications
-   contact
 
 .. container:: hero
 
