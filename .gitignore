@@ -1,4 +1,3 @@
 *.code-workspace
 docs/build/
 .venv/
-*.md

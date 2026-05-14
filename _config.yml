@@ -1,0 +1,29 @@
+theme: jekyll-theme-chirpy
+
+lang: en
+timezone: UTC
+
+title: Junseok Kim
+tagline: Cellular Protocol Firmware Engineer
+description: >-
+  Personal site and technical blog for publications, wireless systems,
+  and future posts on topics such as Sionna and O-RAN.
+
+url: ""
+baseurl: ""
+
+github:
+  username: Kim-Junseok
+
+social:
+  name: Junseok Kim
+  email: ""
+  links:
+    - https://github.com/Kim-Junseok
+    - https://www.linkedin.com/in/junsk
+    - https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en
+
+theme_mode: dual
+
+plugins:
+  - jekyll-include-cache
