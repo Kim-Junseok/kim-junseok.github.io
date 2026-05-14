@@ -19,11 +19,24 @@ social:
   name: Junseok Kim
   email: ""
   links:
-    - https://github.com/Kim-Junseok
     - https://www.linkedin.com/in/junsk
     - https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en
+    - https://github.com/Kim-Junseok
 
 theme_mode: dual
 
 plugins:
   - jekyll-include-cache
+
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
