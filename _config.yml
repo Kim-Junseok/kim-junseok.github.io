@@ -23,7 +23,7 @@ social:
     - https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en
     - https://github.com/Kim-Junseok
 
-theme_mode: dual
+theme_mode: dark
 
 plugins:
   - jekyll-include-cache
@@ -34,6 +34,12 @@ collections:
     sort_by: order
 
 defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      permalink: /posts/:title/
   - scope:
       path: ""
       type: tabs
