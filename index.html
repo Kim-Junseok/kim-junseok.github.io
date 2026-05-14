@@ -1,3 +1,26 @@
 ---
 layout: home
 ---
+
+## Junseok Kim
+
+Firmware engineer bridging cellular protocols, embedded systems, and modem performance optimization.
+
+### Interests
+- Protocol Optimization & Modem Performance Enhancement
+- System Architecture & HW/SW Co-Design
+- Emerging 3GPP Features & Technical Leadership
+- AI-assisted RAN/Modem Optimization
+
+{% assign home_intro_image = site.static_files | where: "path", "/assets/img/home/home-intro.png" | first %}
+{% if home_intro_image %}
+<figure class="home-intro-figure">
+  <img
+    class="home-intro-image"
+    src="{{ '/assets/img/home/home-intro.png' | relative_url }}"
+    alt="Junseok Kim homepage introduction image"
+    loading="eager"
+  >
+</figure>
+{% endif %}
+---
