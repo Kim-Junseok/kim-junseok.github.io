@@ -28,6 +28,12 @@ theme_mode:
 plugins:
   - jekyll-include-cache
 
+exclude:
+  - build_check.py
+  - docs/
+  - .venv/
+  - "*.code-workspace"
+
 collections:
   tabs:
     output: true

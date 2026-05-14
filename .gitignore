@@ -1,3 +1,4 @@
 *.code-workspace
 docs/build/
 .venv/
+DESIGN.md
