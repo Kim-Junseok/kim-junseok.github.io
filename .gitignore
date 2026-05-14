@@ -1,4 +1,7 @@
 *.code-workspace
+_site/
 docs/build/
 .venv/
+.bundle/
+vendor/bundle/
 DESIGN.md

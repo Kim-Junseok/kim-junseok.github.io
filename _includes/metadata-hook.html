@@ -1,0 +1,101 @@
+<!-- Academicons for Google Scholar icon -->
+<link rel="stylesheet" href="{{ '/assets/vendor/academicons/css/academicons.min.css' | relative_url }}">
+
+<style>
+  #sidebar .sidebar-bottom #mode-toggle {
+    margin-right: 0.8rem;
+  }
+
+  @media (min-width: 1650px) {
+    #sidebar .sidebar-bottom #mode-toggle {
+      margin-right: 1rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var button = document.getElementById('mode-toggle');
+
+    if (!button) {
+      return;
+    }
+
+    var html = document.documentElement;
+    var modes = ['auto', 'light', 'dark'];
+    var labels = {
+      auto: 'Theme mode: Auto',
+      light: 'Theme mode: Light',
+      dark: 'Theme mode: Dark'
+    };
+    var icons = {
+      auto: 'fas fa-desktop',
+      light: 'fas fa-sun',
+      dark: 'fas fa-moon'
+    };
+
+    function getSessionMode() {
+      try {
+        return sessionStorage.getItem('mode');
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function setSessionMode(mode) {
+      try {
+        if (mode === 'auto') {
+          sessionStorage.removeItem('mode');
+        } else {
+          sessionStorage.setItem('mode', mode);
+        }
+      } catch (error) {
+        return;
+      }
+    }
+
+    function currentMode() {
+      var storedMode = getSessionMode() || html.getAttribute('data-mode');
+      return storedMode === 'light' || storedMode === 'dark' ? storedMode : 'auto';
+    }
+
+    function updateButton(mode) {
+      var icon = button.querySelector('i');
+
+      if (icon) {
+        icon.className = icons[mode];
+      }
+
+      button.setAttribute('aria-label', labels[mode]);
+      button.setAttribute('title', labels[mode]);
+      button.setAttribute('data-theme-mode', mode);
+    }
+
+    function applyMode(mode) {
+      if (mode === 'auto') {
+        html.removeAttribute('data-mode');
+      } else {
+        html.setAttribute('data-mode', mode);
+      }
+
+      setSessionMode(mode);
+      updateButton(mode);
+      window.postMessage({ id: 'theme-mode' }, '*');
+    }
+
+    button.addEventListener(
+      'click',
+      function (event) {
+        var mode = currentMode();
+        var nextMode = modes[(modes.indexOf(mode) + 1) % modes.length];
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        applyMode(nextMode);
+      },
+      true
+    );
+
+    updateButton(currentMode());
+  });
+</script>

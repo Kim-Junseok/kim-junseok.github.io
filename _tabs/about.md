@@ -5,12 +5,7 @@ order: 1
 
 ## Junseok Kim
 
-Cellular Protocol Firmware Engineer.
+Cellular Protocol Firmware Engineer working at System LSI, Samsung Electronics.
 
-I work on mobile systems and wireless network protocols. This site is where I
-share technical notes and long-form posts, including future writing on Sionna,
-O-RAN, and related RAN/PHY topics.
+I work on mobile systems and wireless network protocols. This site is where I share technical notes and long-form posts, including writing on Open-RAN, Sionna, and related RAN topics.
 
-- [LinkedIn](https://www.linkedin.com/in/junsk)
-- [Google Scholar](https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en)
-- [GitHub](https://github.com/Kim-Junseok)

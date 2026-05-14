@@ -4,7 +4,7 @@ lang: en
 timezone: UTC
 
 title: Junseok Kim
-tagline: Cellular Protocol Firmware Engineer
+tagline: "Cellular Protocol Firmware Engineer<br>Samsung Electronics"
 description: >-
   Personal site and technical blog for publications, wireless systems,
   and future posts on topics such as Sionna and O-RAN.
@@ -26,12 +26,32 @@ social:
 theme_mode: 
 
 plugins:
+  - jekyll-archives
   - jekyll-include-cache
+  - jekyll-paginate
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+paginate: 10
+
+jekyll-archives:
+  # "categories" and "category" are plugin keys; the public label is Topics.
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    category: /topics/:name/
+    tag: /tags/:name/
 
 exclude:
-  - build_check.py
+  - requirements.py
   - docs/
   - .venv/
+  - .bundle/
+  - vendor/
   - "*.code-workspace"
 
 collections:

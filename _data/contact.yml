@@ -1,4 +1,6 @@
-- type: mode-toggle
+- type: googlescholar
+  icon: "ai ai-google-scholar ai-fw"
+  url: "https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en"
 
 - type: github
   icon: "fab fa-github"
@@ -7,7 +9,3 @@
 - type: linkedin
   icon: "fab fa-linkedin"
   url: "https://www.linkedin.com/in/junsk"
-
-- type: googlescholar
-  icon: "ai ai-google-scholar"
-  url: "https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en"
