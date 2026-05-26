@@ -1,16 +1,16 @@
 theme: jekyll-theme-chirpy
 
 lang: en
-timezone: UTC
+timezone: KST
 
 title: Junseok Kim | 김준석
 tagline: "Cellular Protocol Firmware Engineer<br>Samsung Electronics"
 description: >-
-  Personal site and technical blog for publications, wireless systems,
-  and future posts on topics such as Sionna and O-RAN.
+  Personal site and technical blog for publications, wireless systems, and other interests.
 
 url: "https://kim-junseok.github.io"
 baseurl: ""
+avatar: /assets/img/profile/Junseok_Kim.jpg
 
 github:
   username: Kim-Junseok

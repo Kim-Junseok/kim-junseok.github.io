@@ -2,25 +2,29 @@
 layout: home
 ---
 
-## Junseok Kim
+<section class="home-profile-hero" aria-labelledby="home-profile-title">
+  <div class="home-profile-copy">
+    <h2 id="home-profile-title">Junseok Kim</h2>
+    <p class="home-profile-role">
+      <strong>Cellular Protocol Firmware Engineer</strong> bridging <em>protocol design</em> and <em>embedded performance</em>.
+    </p>
+  </div>
 
-<b>Cellular Protocol Firmware Engineer</b> bridging <i>protocol design</i> and <i>embedded performance</i>.
+  <figure class="home-profile-portrait">
+    <img
+      src="{{ '/assets/img/home/Junseok_Kim_3_4.jpg' | relative_url }}"
+      alt="Portrait of Junseok Kim"
+    >
+  </figure>
 
-### Interests
-<b>Cellular Protocols</b> | 5G NR/LTE Optimization, 3GPP Standards<br>
-<b>Embedded Systems</b> | HW/SW Co-Design, Real-Time Stability<br>
-<b>Performance Engineering</b> | Throughput, Power, CPU Profiling<br>
-<b>Next-Gen Wireless</b> | AI-Native RAN, Open-RAN<br>
-
-{% assign home_intro_image = site.static_files | where: "path", "/assets/img/home/home-intro.png" | first %}
-{% if home_intro_image %}
-<figure class="home-intro-figure">
-  <img
-    class="home-intro-image"
-    src="{{ '/assets/img/home/home-intro.png' | relative_url }}"
-    alt="Junseok Kim homepage introduction image"
-    loading="eager"
-  >
-</figure>
-{% endif %}
+  <div class="home-profile-details">
+    <h3>Interests</h3>
+    <ul class="home-interest-list">
+      <li><strong>Cellular Protocols</strong><span>5G NR/LTE Optimization</span></li>
+      <li><strong>Embedded Systems</strong><span>HW/SW Co-Design, Real-Time Stability</span></li>
+      <li><strong>Performance Engineering</strong><span>Throughput, Power, CPU Profiling</span></li>
+      <li><strong>Next-Gen Wireless</strong><span>AI-Native RAN, Open-RAN</span></li>
+    </ul>
+  </div>
+</section>
 ---
