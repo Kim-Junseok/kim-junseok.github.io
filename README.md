@@ -21,6 +21,14 @@ locally with:
 bundle exec jekyll serve --host 127.0.0.1 --port 4000
 ```
 
+Before pushing layout, content, link, or asset changes, run the same quality
+check used by GitHub Actions:
+
+```bash
+bundle exec jekyll build
+python3 scripts/check_site.py
+```
+
 ## Content structure
 
 - `index.html`: homepage entry

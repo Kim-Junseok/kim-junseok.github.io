@@ -4,4 +4,6 @@ docs/build/
 .venv/
 .bundle/
 vendor/bundle/
+__pycache__/
+*.py[cod]
 DESIGN.md
