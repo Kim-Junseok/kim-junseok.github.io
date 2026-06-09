@@ -137,6 +137,52 @@
     box-shadow: var(--sidebar-border-color) 0 0 0 1px;
   }
 
+  .content div[class^='language-'],
+  .content div[class*=' language-'] {
+    overflow: hidden;
+  }
+
+  .content div[class^='language-'] .code-header,
+  .content div[class*=' language-'] .code-header {
+    margin: 0;
+    padding: 0 0.75rem 0 1rem;
+    border-bottom: 1px solid var(--language-border-color);
+  }
+
+  .content div[class^='language-'] .code-header::before,
+  .content div[class*=' language-'] .code-header::before {
+    content: none;
+    display: none;
+  }
+
+  .content div[class^='language-'] .code-header span,
+  .content div[class*=' language-'] .code-header span {
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .content div[class^='language-'] .code-header button,
+  .content div[class*=' language-'] .code-header button {
+    flex: 0 0 2.25rem;
+  }
+
+  .content div[class^='language-'] .highlight,
+  .content div[class*=' language-'] .highlight {
+    padding-bottom: 0;
+  }
+
+  .content div[class^='language-'] .highlight pre.highlight,
+  .content div[class*=' language-'] .highlight pre.highlight {
+    margin: 0;
+    padding: 1rem 1.25rem 1.1rem;
+    line-height: 1.55;
+  }
+
+  .content div[class^='language-'] .highlight code,
+  .content div[class*=' language-'] .highlight code {
+    display: block;
+  }
+
   @media (max-width: 991.98px) {
     .home-profile-hero {
       grid-template-columns: 1fr;
@@ -171,6 +217,11 @@
     .home-interest-list li {
       grid-template-columns: 1fr;
       gap: 0.1rem;
+    }
+
+    .content div[class^='language-'] .highlight pre.highlight,
+    .content div[class*=' language-'] .highlight pre.highlight {
+      padding: 0.9rem 1rem 1rem;
     }
   }
 </style>
@@ -264,4 +315,100 @@
 
     updateButton(currentMode());
   });
+</script>
+
+<script>
+  (function () {
+    document.addEventListener(
+      'click',
+      function (event) {
+        var button = event.target.closest('.code-header > button');
+
+        if (!button) {
+          return;
+        }
+
+        var wrapper = button.closest('div[class^="language-"], div[class*=" language-"]');
+        var code = wrapper ? wrapper.querySelector('.highlight code') : null;
+
+        if (!code) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        copyText(getCodeText(code)).then(
+          function () {
+            showCopyState(button, true);
+          },
+          function () {
+            showCopyState(button, false);
+          }
+        );
+      },
+      true
+    );
+
+    function getCodeText(code) {
+      var clone = code.cloneNode(true);
+
+      clone.querySelectorAll('.rouge-gutter, .lineno').forEach(function (element) {
+        element.remove();
+      });
+
+      return clone.textContent.replace(/\u00a0/g, ' ').replace(/\r\n?/g, '\n').replace(/\s+$/, '');
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+
+      return new Promise(function (resolve, reject) {
+        var textarea = document.createElement('textarea');
+
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        try {
+          document.execCommand('copy') ? resolve() : reject(new Error('copy failed'));
+        } catch (error) {
+          reject(error);
+        } finally {
+          textarea.remove();
+        }
+      });
+    }
+
+    function showCopyState(button, succeeded) {
+      var icon = button.querySelector('i');
+      var originalLabel = button.getAttribute('aria-label') || 'copy';
+      var originalTitle = button.getAttribute('title') || '';
+
+      button.setAttribute('aria-label', succeeded ? 'Copied' : 'Copy failed');
+      button.setAttribute('title', succeeded ? 'Copied' : 'Copy failed');
+      button.setAttribute('data-copy-state', succeeded ? 'success' : 'error');
+
+      if (icon) {
+        icon.className = succeeded ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+      }
+
+      window.setTimeout(function () {
+        button.setAttribute('aria-label', originalLabel);
+        button.setAttribute('title', originalTitle);
+        button.removeAttribute('data-copy-state');
+
+        if (icon) {
+          icon.className = 'far fa-clipboard';
+        }
+      }, 1600);
+    }
+  })();
 </script>

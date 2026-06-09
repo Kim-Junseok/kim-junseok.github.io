@@ -249,6 +249,19 @@ def check_default_theme_mode(site_root: Path, pages: dict[Path, PageParser]) -> 
     return issues
 
 
+def check_code_block_wrappers(site_root: Path, pages: dict[Path, PageParser]) -> list[str]:
+    issues = []
+    broken_marker = '<div class="highlight"><code'
+
+    for page in pages:
+        content = page.read_text(encoding="utf-8")
+        if broken_marker in content:
+            rel_path = display_path(page, site_root)
+            issues.append(f"{rel_path}: code block is missing a <pre> wrapper")
+
+    return issues
+
+
 def check_local_urls(site_root: Path, pages: dict[Path, PageParser]) -> tuple[list[str], int]:
     issues = []
     checked_count = 0
@@ -328,6 +341,7 @@ def main() -> int:
     issues.extend(check_required_files(site_root))
     issues.extend(check_required_snippets(site_root))
     issues.extend(check_default_theme_mode(site_root, pages))
+    issues.extend(check_code_block_wrappers(site_root, pages))
     url_issues, checked_urls = check_local_urls(site_root, pages)
     issues.extend(url_issues)
     issues.extend(check_external_anchors(site_root, pages))
