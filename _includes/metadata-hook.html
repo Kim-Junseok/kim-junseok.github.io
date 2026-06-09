@@ -184,6 +184,8 @@
     }
 
     var html = document.documentElement;
+    var preferenceKey = 'theme-mode';
+    var legacyKey = 'mode';
     var modes = ['auto', 'light', 'dark'];
     var labels = {
       auto: 'Theme mode: Auto',
@@ -198,7 +200,7 @@
 
     function getSessionMode() {
       try {
-        return sessionStorage.getItem('mode');
+        return sessionStorage.getItem(preferenceKey) || sessionStorage.getItem(legacyKey);
       } catch (error) {
         return null;
       }
@@ -207,9 +209,11 @@
     function setSessionMode(mode) {
       try {
         if (mode === 'auto') {
-          sessionStorage.removeItem('mode');
+          sessionStorage.setItem(preferenceKey, mode);
+          sessionStorage.removeItem(legacyKey);
         } else {
-          sessionStorage.setItem('mode', mode);
+          sessionStorage.setItem(preferenceKey, mode);
+          sessionStorage.setItem(legacyKey, mode);
         }
       } catch (error) {
         return;
@@ -218,7 +222,7 @@
 
     function currentMode() {
       var storedMode = getSessionMode() || html.getAttribute('data-mode');
-      return storedMode === 'light' || storedMode === 'dark' ? storedMode : 'auto';
+      return storedMode === 'light' || storedMode === 'dark' || storedMode === 'auto' ? storedMode : 'dark';
     }
 
     function updateButton(mode) {

@@ -23,7 +23,9 @@ social:
     - https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en
     - https://github.com/Kim-Junseok
 
-theme_mode: 
+# Keep theme_mode empty so the theme toggle stays visible.
+default_theme_mode: dark
+theme_mode:
 
 plugins:
   - jekyll-archives

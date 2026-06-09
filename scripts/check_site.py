@@ -46,6 +46,9 @@ REQUIRED_FILES = (
 
 REQUIRED_SNIPPETS = {
     "index.html": (
+        'data-mode="dark"',
+        'id="homepage-default-theme-mode"',
+        'id="mode-toggle"',
         "home-profile-hero",
         "Junseok Kim",
     ),
@@ -56,6 +59,9 @@ REQUIRED_SNIPPETS = {
         "https://sites.google.com/view/sunghyun-chois-home",
     ),
 }
+
+DEFAULT_THEME_MODE = "dark"
+DEFAULT_THEME_MARKER = "homepage-default-theme-mode"
 
 
 @dataclass(frozen=True)
@@ -226,6 +232,23 @@ def check_required_snippets(site_root: Path) -> list[str]:
     return issues
 
 
+def check_default_theme_mode(site_root: Path, pages: dict[Path, PageParser]) -> list[str]:
+    issues = []
+    expected_mode = f'data-mode="{DEFAULT_THEME_MODE}"'
+
+    for page in pages:
+        content = page.read_text(encoding="utf-8")
+        rel_path = display_path(page, site_root)
+
+        if expected_mode not in content:
+            issues.append(f"{rel_path}: expected default theme marker not found: {expected_mode}")
+
+        if DEFAULT_THEME_MARKER not in content:
+            issues.append(f"{rel_path}: default theme bootstrap script is missing")
+
+    return issues
+
+
 def check_local_urls(site_root: Path, pages: dict[Path, PageParser]) -> tuple[list[str], int]:
     issues = []
     checked_count = 0
@@ -304,6 +327,7 @@ def main() -> int:
     pages, issues = parse_html_pages(site_root)
     issues.extend(check_required_files(site_root))
     issues.extend(check_required_snippets(site_root))
+    issues.extend(check_default_theme_mode(site_root, pages))
     url_issues, checked_urls = check_local_urls(site_root, pages)
     issues.extend(url_issues)
     issues.extend(check_external_anchors(site_root, pages))
