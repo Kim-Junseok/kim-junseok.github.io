@@ -36,7 +36,7 @@ layout: page
       <!-- top-category -->
       <div
         id="{{ HEAD_PREFIX }}{{ group_index }}"
-        class="card-header d-flex justify-content-between hide-border-bottom"
+        class="card-header d-flex justify-content-between{% if sub_categories_size > 0 %} hide-border-bottom{% endif %}"
       >
         <span class="ms-2">
           <i class="far fa-folder{% if sub_categories_size > 0 %}-open{% endif %} fa-fw"></i>
@@ -90,10 +90,6 @@ layout: page
           >
             <i class="fas fa-fw fa-angle-down"></i>
           </a>
-        {% else %}
-          <span data-bs-toggle="collapse" class="category-trigger hide-border-bottom disabled">
-            <i class="fas fa-fw fa-angle-right"></i>
-          </span>
         {% endif %}
       </div>
       <!-- .card-header -->

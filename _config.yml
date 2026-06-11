@@ -26,6 +26,7 @@ social:
 # Keep theme_mode empty so the theme toggle stays visible.
 default_theme_mode: dark
 theme_mode:
+toc: true
 
 plugins:
   - jekyll-archives
@@ -68,6 +69,7 @@ defaults:
     values:
       layout: post
       permalink: /posts/:title/
+      toc: true
   - scope:
       path: ""
       type: tabs

@@ -183,6 +183,15 @@
     display: block;
   }
 
+  @media (hover: none), (pointer: coarse) {
+    main h2 .anchor,
+    main h3 .anchor,
+    main h4 .anchor,
+    main h5 .anchor {
+      display: none;
+    }
+  }
+
   @media (max-width: 991.98px) {
     .home-profile-hero {
       grid-template-columns: 1fr;
@@ -314,6 +323,73 @@
     );
 
     updateButton(currentMode());
+  });
+</script>
+
+<script id="homepage-page-toc-init">
+  document.addEventListener('DOMContentLoaded', function () {
+    var wrapper = document.getElementById('toc-wrapper');
+    var toc = document.getElementById('toc');
+    var content = document.querySelector('.content');
+
+    if (!wrapper || !toc || !content || document.querySelector('article[data-toc="true"]')) {
+      return;
+    }
+
+    var headings = Array.prototype.slice
+      .call(content.querySelectorAll('h2[id], h3[id], h4[id]'))
+      .filter(function (heading) {
+        return !heading.hasAttribute('data-toc-skip');
+      });
+
+    if (!headings.length) {
+      return;
+    }
+
+    if (window.tocbot) {
+      try {
+        window.tocbot.init({
+          tocSelector: '#toc',
+          contentSelector: '.content',
+          ignoreSelector: '[data-toc-skip]',
+          headingSelector: 'h2, h3, h4',
+          orderedList: false,
+          scrollSmooth: false,
+          headingsOffset: 32
+        });
+      } catch (error) {
+        buildFallbackToc();
+      }
+    } else {
+      buildFallbackToc();
+    }
+
+    if (!toc.children.length) {
+      buildFallbackToc();
+    }
+
+    wrapper.classList.remove('invisible');
+
+    function buildFallbackToc() {
+      var list = document.createElement('ol');
+
+      toc.innerHTML = '';
+      list.className = 'toc-list';
+
+      headings.forEach(function (heading) {
+        var item = document.createElement('li');
+        var link = document.createElement('a');
+
+        item.className = 'toc-list-item toc-' + heading.tagName.toLowerCase();
+        link.className = 'toc-link';
+        link.href = '#' + heading.id;
+        link.textContent = heading.textContent.trim();
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+
+      toc.appendChild(list);
+    }
   });
 </script>
 

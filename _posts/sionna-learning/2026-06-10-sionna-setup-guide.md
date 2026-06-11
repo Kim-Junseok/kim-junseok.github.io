@@ -3,7 +3,6 @@ title: "Sionna Setup Guide: WSL2, Ubuntu 24.04, and CUDA 13.0"
 date: 2026-06-09 15:00:00 +0000
 categories: [Sionna Learning]
 tags: [sionna, wsl2, ubuntu, cuda, pytorch]
-description: "A practical setup guide for running NVIDIA Sionna PHY, SYS, and RT on Windows through WSL2 with Ubuntu 24.04 and CUDA 13.0."
 ---
 
 > A practical setup guide for running NVIDIA Sionna PHY / SYS / RT on Windows through WSL2.  
@@ -17,20 +16,7 @@ description: "A practical setup guide for running NVIDIA Sionna PHY, SYS, and RT
 
 ---
 
-## Table of Contents
-
-1. [Choosing the Environment: WSL2 vs Dual Boot](#1-choosing-the-environment-wsl2-vs-dual-boot)
-2. [Install WSL2 + Ubuntu 24.04](#2-install-wsl2--ubuntu-2404)
-3. [Install NVIDIA Driver + CUDA 13.0](#3-install-nvidia-driver--cuda-130)
-4. [Set Up a Python Virtual Environment](#4-set-up-a-python-virtual-environment)
-5. [Install PyTorch + Sionna](#5-install-pytorch--sionna)
-6. [Set Up a VS Code Workspace](#6-set-up-a-vs-code-workspace)
-7. [Verify the Installation](#7-verify-the-installation)
-8. [Daily Startup Routine](#8-daily-startup-routine)
-
----
-
-## 1. Choosing the Environment: WSL2 vs Dual Boot
+## 1. WSL2 vs Dual Boot
 
 | | WSL2 (Recommended) | Dual Boot |
 |---|---|---|
@@ -45,7 +31,7 @@ Sionna RT can run on WSL2 + CUDA, and it can also run without a GPU by using the
 
 ---
 
-## 2. Install WSL2 + Ubuntu 24.04
+## 2. Install WSL2
 
 Open PowerShell as Administrator and run:
 
@@ -77,9 +63,9 @@ sudo apt install -y python3 python3-venv python3-pip git curl build-essential
 
 ---
 
-## 3. Install NVIDIA Driver + CUDA 13.0
+## 3. NVIDIA Driver + CUDA
 
-### 3-1. Install the NVIDIA Driver on Windows
+### 3-1. NVIDIA Driver
 
 When using GPU acceleration inside WSL2, install the NVIDIA driver on **Windows only**.  
 Do not install a separate NVIDIA driver inside Ubuntu running under WSL.
@@ -92,7 +78,7 @@ WSL Ubuntu (no separate driver, CUDA toolkit only) yes
 
 Installing [NVIDIA App](https://www.nvidia.com/en-us/software/nvidia-app/) is a convenient way to keep the Windows driver up to date.
 
-### 3-2. Install CUDA Toolkit 13.0 in Ubuntu
+### 3-2. CUDA Toolkit 13.0
 
 > **Important for RTX 50-series users:**  
 > GPUs such as the RTX 5060 use NVIDIA's Blackwell architecture and have Compute Capability 12.0. To use this hardware natively instead of falling back to compatibility behavior, CUDA 13.0 or newer is recommended. If an older CUDA 12.x toolkit is already installed, clean up the old packages and folders first to reduce conflicts.
@@ -126,7 +112,7 @@ sudo apt install -y cuda-toolkit-13-0
 >
 > Ubuntu 24.04 uses `libtinfo6`, and `libtinfo5` is no longer available by default. For RTX 50-series systems, it is better to move directly to a CUDA 13.0 setup.
 
-### 3-3. Register PATH and Library Paths
+### 3-3. PATH and Library Paths
 
 Use the generic CUDA symlink path (`/usr/local/cuda`) instead of hardcoding a specific version folder such as `/usr/local/cuda-13.0`. This makes future CUDA version switching easier.
 
@@ -147,7 +133,7 @@ source ~/.bashrc
 > **Ubuntu alternatives note:**  
 > Running `ls -l /usr/local/cuda` may show a chain through `/etc/alternatives/cuda` and eventually point to `/usr/local/cuda-13.0`. This is a normal Ubuntu alternatives structure for switching between installed versions, so you do not need to modify it manually.
 
-### 3-4. Verify the CUDA Installation
+### 3-4. Verify CUDA
 
 ```bash
 nvidia-smi     # Check GPU visibility and driver version
@@ -159,7 +145,7 @@ It does not have to exactly match the installed toolkit version, such as CUDA 13
 
 ---
 
-## 4. Set Up a Python Virtual Environment
+## 4. Python Virtual Environment
 
 ```bash
 # Create a workspace directory
@@ -186,7 +172,7 @@ After activation, your shell prompt should include `(.venv)`.
 
 Run this section while the virtual environment is active.
 
-### 5-1. Install PyTorch (CUDA 13.0 / cu130)
+### 5-1. PyTorch (cu130)
 
 For RTX 50-series GPUs, use the `cu130` PyTorch index so the installed PyTorch build matches the CUDA 13.0 stack.
 
@@ -201,7 +187,7 @@ pip uninstall -y torch torchvision torchaudio
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130 --default-timeout=1000
 ```
 
-### 5-2. Verify GPU Detection and Native Compatibility
+### 5-2. GPU Detection
 
 After installation, run the following command and check that the GPU is detected without compatibility warnings:
 
@@ -227,7 +213,7 @@ If you only want CPU execution without GPU acceleration, install the standard Py
 pip install torch torchvision torchaudio
 ```
 
-### 5-3. Install Sionna
+### 5-3. Sionna
 
 ```bash
 pip install sionna
@@ -236,7 +222,7 @@ pip install sionna
 When running `pip install sionna`, packages required for Sionna RT, such as `drjit` and `mitsuba`, are installed automatically.  
 If you later run `pip install drjit mitsuba`, seeing `Requirement already satisfied` is normal.
 
-### Install the RT CPU Backend (LLVM)
+### RT CPU Backend (LLVM)
 
 Sionna RT can use LLVM to run ray-tracing operations on CPU when no GPU backend is available.
 
@@ -247,7 +233,7 @@ sudo apt install -y llvm-15
 > **What LLVM does:**  
 > `drjit` uses LLVM as the CPU backend when compiling code at runtime. If a CUDA-capable GPU is available, the CUDA backend is selected automatically, while LLVM remains useful as a fallback.
 
-### Install JupyterLab
+### JupyterLab
 
 ```bash
 pip install jupyterlab
@@ -263,9 +249,9 @@ Copy the printed `http://localhost:8888/...` URL and open it in a Windows browse
 
 ---
 
-## 6. Set Up a VS Code Workspace
+## 6. VS Code Workspace
 
-### Install VS Code + Remote WSL
+### VS Code + Remote WSL
 
 1. Install VS Code from [code.visualstudio.com](https://code.visualstudio.com). During installation, make sure "Add to PATH" is enabled.
 2. Install these extensions:
@@ -273,7 +259,7 @@ Copy the printed `http://localhost:8888/...` URL and open it in a Windows browse
    - `Python` (`ms-python.python`)
    - `Jupyter` (`ms-toolsai.jupyter`)
 
-### Open VS Code from WSL
+### Open VS Code
 
 ```bash
 code ~/sionna-workspace/sionna-workspace.code-workspace
@@ -283,7 +269,7 @@ On the first launch, VS Code Server is installed automatically inside WSL. If yo
 
 > If the `code` command is not found, run `wsl --shutdown` from PowerShell and restart Ubuntu.
 
-### Create a Workspace File
+### Workspace File
 
 ```bash
 cat > ~/sionna-workspace/sionna-workspace.code-workspace << 'EOF'
@@ -302,9 +288,9 @@ When this workspace file is opened, VS Code automatically uses the `~/sionna-wor
 
 ---
 
-## 7. Verify the Installation
+## 7. Verify Installation
 
-### Clone the Official Example Notebooks
+### Official Example Notebooks
 
 ```bash
 cd ~/sionna-workspace
@@ -312,7 +298,7 @@ git clone --recursive https://github.com/NVlabs/sionna
 cd sionna/notebooks
 ```
 
-### Suggested Verification Order
+### Verification Order
 
 | Notebook | What to check |
 |---|---|
@@ -322,7 +308,7 @@ cd sionna/notebooks
 
 > RT notebooks may take several minutes on the first run while scenes are compiled. This is normal.
 
-### Check the Sionna Version
+### Sionna Version
 
 ```bash
 python -c "import sionna; print(sionna.__version__)"
@@ -330,7 +316,7 @@ python -c "import sionna; print(sionna.__version__)"
 
 ---
 
-## 8. Daily Startup Routine
+## 8. Daily Startup
 
 ```bash
 cd ~/sionna-workspace

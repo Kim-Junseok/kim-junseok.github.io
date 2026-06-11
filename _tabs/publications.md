@@ -2,14 +2,13 @@
 title: Publications
 icon: fas fa-book
 order: 2
+toc: true
 ---
-
-## Publications
 
 This page groups journal articles, conference papers, and patents.\
 For live citation counts, see my [Google Scholar profile](https://scholar.google.com/citations?user=mJTAhlgAAAAJ&hl=en).
 
-### Journals
+## Journals
 
 - **Two-Step Random Access for 5G System: Latest Trends and Challenges,**  
   **Junseok Kim**, Goodsol Lee, Seongwon Kim, Tarik Taleb, Sunghyun Choi, and Saewoong Bahk,  
@@ -31,7 +30,7 @@ For live citation counts, see my [Google Scholar profile](https://scholar.google
   **Junseok Kim**, Dongmyoung Kim, and Sunghyun Choi,  
   ICT Express, 3(1), 1-8, 2017.
 
-### Conferences
+## Conferences
 
 - **Performance Analysis of AMC for LTE-LAA under Rayleigh Fading Channel,**  
   Jaehong Yi, **Junseok Kim**, Kitaek Lee, and Saewoong Bahk,  
@@ -53,7 +52,7 @@ For live citation counts, see my [Google Scholar profile](https://scholar.google
   Kitaek Lee, Sundo Kim, **Junseok Kim**, and Sunghyun Choi,  
   2018 IEEE International Conference on Communications (ICC), 1-6, 2018.
 
-### Patents
+## Patents
 
 - **Method and system for random access and uplink data transmission for low latency communication,**\
 Sundo Kim, **Junseok Kim**, Kitaek Lee, Seungil Park, and Sunghyun Choi,\
@@ -70,4 +69,3 @@ Korea Patent 10-1790232, Oct. 2017.
 - **Method and apparatus for random access in mobile communication system for low latency support,**\
 Sundo Kim, Seungil Park, **Junseok Kim**, and Sunghyun Choi,\
 Korea Patent 10-1766840, Aug. 2017.
-

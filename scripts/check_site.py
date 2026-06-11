@@ -62,6 +62,8 @@ REQUIRED_SNIPPETS = {
 
 DEFAULT_THEME_MODE = "dark"
 DEFAULT_THEME_MARKER = "homepage-default-theme-mode"
+TOC_MARKER = 'id="toc-wrapper"'
+PAGE_TOC_INIT_MARKER = "homepage-page-toc-init"
 
 
 @dataclass(frozen=True)
@@ -262,6 +264,43 @@ def check_code_block_wrappers(site_root: Path, pages: dict[Path, PageParser]) ->
     return issues
 
 
+def check_topics_interactions(site_root: Path) -> list[str]:
+    issues = []
+    topics_page = site_root / "topics/index.html"
+
+    if topics_page.exists():
+        content = topics_page.read_text(encoding="utf-8")
+        if "category-trigger hide-border-bottom disabled" in content:
+            issues.append("topics/index.html: disabled topic arrow trigger should not be rendered")
+
+    return issues
+
+
+def check_toc_policy(site_root: Path) -> list[str]:
+    issues = []
+    expected_pages = (
+        "publications/index.html",
+        "posts/sionna-setup-guide/index.html",
+    )
+    excluded_pages = ("about/index.html",)
+
+    for rel_path in expected_pages:
+        page = site_root / rel_path
+        if page.exists():
+            content = page.read_text(encoding="utf-8")
+            if TOC_MARKER not in content:
+                issues.append(f"{rel_path}: expected right-sidebar TOC is missing")
+            if PAGE_TOC_INIT_MARKER not in content:
+                issues.append(f"{rel_path}: page TOC initialization script is missing")
+
+    for rel_path in excluded_pages:
+        page = site_root / rel_path
+        if page.exists() and TOC_MARKER in page.read_text(encoding="utf-8"):
+            issues.append(f"{rel_path}: ABOUT page should not render the right-sidebar TOC")
+
+    return issues
+
+
 def check_local_urls(site_root: Path, pages: dict[Path, PageParser]) -> tuple[list[str], int]:
     issues = []
     checked_count = 0
@@ -342,6 +381,8 @@ def main() -> int:
     issues.extend(check_required_snippets(site_root))
     issues.extend(check_default_theme_mode(site_root, pages))
     issues.extend(check_code_block_wrappers(site_root, pages))
+    issues.extend(check_topics_interactions(site_root))
+    issues.extend(check_toc_policy(site_root))
     url_issues, checked_urls = check_local_urls(site_root, pages)
     issues.extend(url_issues)
     issues.extend(check_external_anchors(site_root, pages))
