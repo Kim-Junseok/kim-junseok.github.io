@@ -346,32 +346,86 @@
       return;
     }
 
-    if (window.tocbot) {
-      try {
-        window.tocbot.init({
-          tocSelector: '#toc',
-          contentSelector: '.content',
-          ignoreSelector: '[data-toc-skip]',
-          headingSelector: 'h2, h3, h4',
-          orderedList: false,
-          scrollSmooth: false,
-          headingsOffset: 32
-        });
-      } catch (error) {
+    initPageToc();
+    wrapper.classList.remove('invisible');
+    updateActiveTocLink();
+    window.setTimeout(updateActiveTocLink, 0);
+    window.setTimeout(updateActiveTocLink, 150);
+    window.setTimeout(updateActiveTocLink, 500);
+    window.addEventListener('load', updateActiveTocLink);
+    window.addEventListener('resize', requestActiveTocUpdate);
+    window.addEventListener('scroll', requestActiveTocUpdate);
+    document.addEventListener('click', function (event) {
+      var link = findHashLink(event.target);
+
+      if (!link) {
+        return;
+      }
+
+      rememberHashLink(link);
+      scheduleActiveTocUpdates();
+    }, true);
+    window.addEventListener('hashchange', function () {
+      rememberCurrentHash();
+      scheduleActiveTocUpdates();
+    });
+
+    var lockedHeadingId = null;
+    var lockedUntil = 0;
+
+    function initPageToc() {
+      if (window.tocbot) {
+        var previousHashChange = window.onhashchange;
+        var previousScrollEnd = window.onscrollend;
+
+        try {
+          window.tocbot.destroy();
+        } catch (error) {
+          error = null;
+        }
+
+        try {
+          window.tocbot.init({
+            tocSelector: '#toc',
+            contentSelector: '.content',
+            ignoreSelector: '[data-toc-skip]',
+            headingSelector: 'h2, h3, h4',
+            orderedList: false,
+            scrollSmooth: false,
+            headingsOffset: 32
+          });
+          detachPageTocbot(previousHashChange, previousScrollEnd);
+        } catch (error) {
+          buildFallbackToc();
+        }
+      } else {
         buildFallbackToc();
       }
-    } else {
-      buildFallbackToc();
+
+      if (!toc.children.length) {
+        buildFallbackToc();
+      }
     }
 
-    if (!toc.children.length) {
-      buildFallbackToc();
-    }
+    function detachPageTocbot(previousHashChange, previousScrollEnd) {
+      var renderedToc = toc.innerHTML;
 
-    wrapper.classList.remove('invisible');
+      try {
+        window.tocbot.destroy();
+      } catch (error) {
+        error = null;
+      }
+
+      if (renderedToc) {
+        toc.innerHTML = renderedToc;
+      }
+
+      window.onhashchange = previousHashChange;
+      window.onscrollend = previousScrollEnd;
+    }
 
     function buildFallbackToc() {
-      var list = document.createElement('ol');
+      var list = document.createElement('ul');
 
       toc.innerHTML = '';
       list.className = 'toc-list';
@@ -380,8 +434,8 @@
         var item = document.createElement('li');
         var link = document.createElement('a');
 
-        item.className = 'toc-list-item toc-' + heading.tagName.toLowerCase();
-        link.className = 'toc-link';
+        item.className = 'toc-list-item';
+        link.className = 'toc-link node-name--' + heading.tagName;
         link.href = '#' + heading.id;
         link.textContent = heading.textContent.trim();
         item.appendChild(link);
@@ -389,6 +443,215 @@
       });
 
       toc.appendChild(list);
+    }
+
+    function updateActiveTocLink() {
+      var target = getActiveHeading();
+
+      if (!target || !content.contains(target)) {
+        return;
+      }
+
+      var activeLink = Array.prototype.slice
+        .call(toc.querySelectorAll('.toc-link'))
+        .filter(function (link) {
+          return decodeHash((link.getAttribute('href') || '').replace(/^#/, '')) === target.id;
+        })[0];
+
+      if (!activeLink) {
+        return;
+      }
+
+      Array.prototype.slice.call(toc.querySelectorAll('.is-active-link')).forEach(function (link) {
+        link.classList.remove('is-active-link');
+      });
+
+      Array.prototype.slice.call(toc.querySelectorAll('.is-active-li')).forEach(function (item) {
+        item.classList.remove('is-active-li');
+      });
+
+      activeLink.classList.add('is-active-link');
+
+      var activeItem = findParentItem(activeLink);
+
+      if (activeItem) {
+        activeItem.classList.add('is-active-li');
+      }
+    }
+
+    function getActiveHeading() {
+      var lockedHeading = getLockedHeading();
+      var hashTarget = getHashHeading();
+
+      if (lockedHeading && isNearHeading(lockedHeading)) {
+        return lockedHeading;
+      }
+
+      if (hashTarget && isNearHeading(hashTarget)) {
+        return hashTarget;
+      }
+
+      if (isNearPageBottom()) {
+        return headings[headings.length - 1];
+      }
+
+      var active = headings[0];
+      var offset = getActivationOffset();
+
+      headings.forEach(function (heading) {
+        if (heading.getBoundingClientRect().top <= offset) {
+          active = heading;
+        }
+      });
+
+      return active;
+    }
+
+    function getHashHeading() {
+      var rawHash = window.location.hash;
+
+      if (!rawHash || rawHash === '#') {
+        return null;
+      }
+
+      var target = document.getElementById(decodeHash(rawHash.slice(1)));
+
+      return target && content.contains(target) ? target : null;
+    }
+
+    function getLockedHeading() {
+      var target = lockedHeadingId ? document.getElementById(lockedHeadingId) : null;
+
+      if (!target || !content.contains(target) || Date.now() > lockedUntil) {
+        lockedHeadingId = null;
+        lockedUntil = 0;
+        return null;
+      }
+
+      return target;
+    }
+
+    function isNearHeading(heading) {
+      var top = heading.getBoundingClientRect().top;
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+
+      return Math.abs(top) <= getActivationOffset() || top < viewportHeight * 0.6 || isNearPageBottom();
+    }
+
+    function isNearPageBottom() {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      var documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+
+      return scrollTop + viewportHeight >= documentHeight - 4;
+    }
+
+    function getActivationOffset() {
+      var topbar = document.getElementById('topbar-wrapper');
+      var topbarHeight = topbar ? topbar.offsetHeight : 0;
+
+      return topbarHeight + 24;
+    }
+
+    function requestActiveTocUpdate() {
+      var frame = window.requestAnimationFrame || function (callback) {
+        return window.setTimeout(callback, 16);
+      };
+
+      if (requestActiveTocUpdate.waiting) {
+        return;
+      }
+
+      requestActiveTocUpdate.waiting = true;
+      frame(function () {
+        requestActiveTocUpdate.waiting = false;
+        updateActiveTocLink();
+      });
+    }
+
+    function scheduleActiveTocUpdates() {
+      window.setTimeout(updateActiveTocLink, 0);
+      window.setTimeout(updateActiveTocLink, 80);
+      window.setTimeout(updateActiveTocLink, 200);
+      window.setTimeout(updateActiveTocLink, 500);
+      window.setTimeout(updateActiveTocLink, 900);
+    }
+
+    function rememberCurrentHash() {
+      var rawHash = window.location.hash;
+
+      if (!rawHash || rawHash === '#') {
+        return;
+      }
+
+      rememberHeadingId(decodeHash(rawHash.slice(1)));
+    }
+
+    function rememberHashLink(link) {
+      var href = link.getAttribute('href') || '';
+
+      if (href.charAt(0) !== '#') {
+        return;
+      }
+
+      rememberHeadingId(decodeHash(href.slice(1)));
+    }
+
+    function rememberHeadingId(id) {
+      var target = document.getElementById(id);
+
+      if (!target || !content.contains(target)) {
+        return;
+      }
+
+      lockedHeadingId = id;
+      lockedUntil = Date.now() + 1200;
+    }
+
+    function findHashLink(element) {
+      var current = element;
+
+      while (current && current !== document) {
+        if (
+          current.tagName &&
+          current.tagName.toLowerCase() === 'a' &&
+          (toc.contains(current) || content.contains(current)) &&
+          (current.getAttribute('href') || '').charAt(0) === '#'
+        ) {
+          return current;
+        }
+
+        current = current.parentNode;
+      }
+
+      return null;
+    }
+
+    function decodeHash(value) {
+      try {
+        return decodeURIComponent(value);
+      } catch (error) {
+        return value;
+      }
+    }
+
+    function findParentItem(element) {
+      var current = element;
+
+      while (current && current !== toc) {
+        if (current.tagName && current.tagName.toLowerCase() === 'li') {
+          return current;
+        }
+
+        current = current.parentNode;
+      }
+
+      return null;
     }
   });
 </script>
