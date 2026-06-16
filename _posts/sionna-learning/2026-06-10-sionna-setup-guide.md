@@ -205,7 +205,7 @@ Is Compatible: True
 
 If warnings such as `sm_120 is not compatible` are gone, the native GPU acceleration environment is set up correctly.
 
-### CPU-only Setup
+### 5-3. CPU-only Setup
 
 If you only want CPU execution without GPU acceleration, install the standard PyPI build:
 
@@ -213,7 +213,7 @@ If you only want CPU execution without GPU acceleration, install the standard Py
 pip install torch torchvision torchaudio
 ```
 
-### 5-3. Sionna
+### 5-4. Sionna
 
 ```bash
 pip install sionna
@@ -222,7 +222,7 @@ pip install sionna
 When running `pip install sionna`, packages required for Sionna RT, such as `drjit` and `mitsuba`, are installed automatically.  
 If you later run `pip install drjit mitsuba`, seeing `Requirement already satisfied` is normal.
 
-### RT CPU Backend (LLVM)
+### 5-5. RT CPU Backend (LLVM)
 
 Sionna RT can use LLVM to run ray-tracing operations on CPU when no GPU backend is available.
 
@@ -233,7 +233,7 @@ sudo apt install -y llvm-15
 > **What LLVM does:**  
 > `drjit` uses LLVM as the CPU backend when compiling code at runtime. If a CUDA-capable GPU is available, the CUDA backend is selected automatically, while LLVM remains useful as a fallback.
 
-### JupyterLab
+### 5-6. JupyterLab
 
 ```bash
 pip install jupyterlab
@@ -251,7 +251,7 @@ Copy the printed `http://localhost:8888/...` URL and open it in a Windows browse
 
 ## 6. VS Code Workspace
 
-### VS Code + Remote WSL
+### 6-1. VS Code + Remote WSL
 
 1. Install VS Code from [code.visualstudio.com](https://code.visualstudio.com). During installation, make sure "Add to PATH" is enabled.
 2. Install these extensions:
@@ -259,7 +259,7 @@ Copy the printed `http://localhost:8888/...` URL and open it in a Windows browse
    - `Python` (`ms-python.python`)
    - `Jupyter` (`ms-toolsai.jupyter`)
 
-### Open VS Code
+### 6-2. Open VS Code
 
 ```bash
 code ~/sionna-workspace/sionna-workspace.code-workspace
@@ -269,7 +269,7 @@ On the first launch, VS Code Server is installed automatically inside WSL. If yo
 
 > If the `code` command is not found, run `wsl --shutdown` from PowerShell and restart Ubuntu.
 
-### Workspace File
+### 6-3. Workspace File
 
 ```bash
 cat > ~/sionna-workspace/sionna-workspace.code-workspace << 'EOF'
@@ -290,7 +290,7 @@ When this workspace file is opened, VS Code automatically uses the `~/sionna-wor
 
 ## 7. Verify Installation
 
-### Official Example Notebooks
+### 7-1. Official Example Notebooks
 
 ```bash
 cd ~/sionna-workspace
@@ -298,7 +298,7 @@ git clone --recursive https://github.com/NVlabs/sionna
 cd sionna/notebooks
 ```
 
-### Verification Order
+### 7-2. Verification Order
 
 | Notebook | What to check |
 |---|---|
@@ -308,7 +308,7 @@ cd sionna/notebooks
 
 > RT notebooks may take several minutes on the first run while scenes are compiled. This is normal.
 
-### Sionna Version
+### 7-3. Sionna Version
 
 ```bash
 python -c "import sionna; print(sionna.__version__)"
