@@ -331,8 +331,9 @@
     var wrapper = document.getElementById('toc-wrapper');
     var toc = document.getElementById('toc');
     var content = document.querySelector('.content');
+    var isPostToc = Boolean(document.querySelector('article[data-toc="true"]'));
 
-    if (!wrapper || !toc || !content || document.querySelector('article[data-toc="true"]')) {
+    if (!wrapper || !toc || !content) {
       return;
     }
 
@@ -346,15 +347,32 @@
       return;
     }
 
-    initPageToc();
-    wrapper.classList.remove('invisible');
+    var pendingHeadingId = null;
+    var pendingReleaseTimer = null;
+    var scrollSettleTimer = null;
+
+    if (!isPostToc) {
+      initPageToc();
+      wrapper.classList.remove('invisible');
+    }
+
+    observeTocState();
+    rememberCurrentHash();
     updateActiveTocLink();
     window.setTimeout(updateActiveTocLink, 0);
     window.setTimeout(updateActiveTocLink, 150);
     window.setTimeout(updateActiveTocLink, 500);
     window.addEventListener('load', updateActiveTocLink);
     window.addEventListener('resize', requestActiveTocUpdate);
-    window.addEventListener('scroll', requestActiveTocUpdate);
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('wheel', clearPendingHeading, { passive: true });
+    window.addEventListener('touchstart', clearPendingHeading, { passive: true });
+    document.addEventListener('pointerdown', clearPendingHeading, true);
+    document.addEventListener('keydown', function (event) {
+      if (isScrollKey(event.key)) {
+        clearPendingHeading();
+      }
+    });
     document.addEventListener('click', function (event) {
       var link = findHashLink(event.target);
 
@@ -362,16 +380,15 @@
         return;
       }
 
-      rememberHashLink(link);
+      rememberAnchorTarget(link);
+      updateActiveTocLink();
       scheduleActiveTocUpdates();
     }, true);
     window.addEventListener('hashchange', function () {
       rememberCurrentHash();
+      updateActiveTocLink();
       scheduleActiveTocUpdates();
     });
-
-    var lockedHeadingId = null;
-    var lockedUntil = 0;
 
     function initPageToc() {
       if (window.tocbot) {
@@ -462,33 +479,57 @@
         return;
       }
 
-      Array.prototype.slice.call(toc.querySelectorAll('.is-active-link')).forEach(function (link) {
+      var activeLinks = Array.prototype.slice.call(toc.querySelectorAll('.is-active-link'));
+      var activeItems = Array.prototype.slice.call(toc.querySelectorAll('.is-active-li'));
+      var activeBranchItems = findParentItems(activeLink);
+      var activeBranchLists = activeBranchItems
+        .map(findDirectChildList)
+        .filter(function (list) {
+          return Boolean(list);
+        });
+      var collapsibleLists = Array.prototype.slice.call(
+        toc.querySelectorAll('.toc-list.is-collapsible')
+      );
+
+      if (
+        activeLinks.length === 1 &&
+        activeLinks[0] === activeLink &&
+        haveSameElements(activeItems, activeBranchItems) &&
+        collapsibleLists.every(function (list) {
+          var shouldExpand = activeBranchLists.indexOf(list) !== -1;
+          return shouldExpand
+            ? !list.classList.contains('is-collapsed')
+            : list.classList.contains('is-collapsed');
+        })
+      ) {
+        return;
+      }
+
+      activeLinks.forEach(function (link) {
         link.classList.remove('is-active-link');
       });
 
-      Array.prototype.slice.call(toc.querySelectorAll('.is-active-li')).forEach(function (item) {
+      activeItems.forEach(function (item) {
         item.classList.remove('is-active-li');
       });
 
       activeLink.classList.add('is-active-link');
 
-      var activeItem = findParentItem(activeLink);
+      activeBranchItems.forEach(function (item) {
+        item.classList.add('is-active-li');
+      });
 
-      if (activeItem) {
-        activeItem.classList.add('is-active-li');
-      }
+      collapsibleLists.forEach(function (list) {
+        var shouldCollapse = activeBranchLists.indexOf(list) === -1;
+        list.classList.toggle('is-collapsed', shouldCollapse);
+      });
     }
 
     function getActiveHeading() {
-      var lockedHeading = getLockedHeading();
-      var hashTarget = getHashHeading();
+      var pendingHeading = getPendingHeading();
 
-      if (lockedHeading && isNearHeading(lockedHeading)) {
-        return lockedHeading;
-      }
-
-      if (hashTarget && isNearHeading(hashTarget)) {
-        return hashTarget;
+      if (pendingHeading) {
+        return pendingHeading;
       }
 
       if (isNearPageBottom()) {
@@ -505,37 +546,6 @@
       });
 
       return active;
-    }
-
-    function getHashHeading() {
-      var rawHash = window.location.hash;
-
-      if (!rawHash || rawHash === '#') {
-        return null;
-      }
-
-      var target = document.getElementById(decodeHash(rawHash.slice(1)));
-
-      return target && content.contains(target) ? target : null;
-    }
-
-    function getLockedHeading() {
-      var target = lockedHeadingId ? document.getElementById(lockedHeadingId) : null;
-
-      if (!target || !content.contains(target) || Date.now() > lockedUntil) {
-        lockedHeadingId = null;
-        lockedUntil = 0;
-        return null;
-      }
-
-      return target;
-    }
-
-    function isNearHeading(heading) {
-      var top = heading.getBoundingClientRect().top;
-      var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-
-      return Math.abs(top) <= getActivationOffset() || top < viewportHeight * 0.6 || isNearPageBottom();
     }
 
     function isNearPageBottom() {
@@ -574,6 +584,17 @@
       });
     }
 
+    function handleScroll() {
+      requestActiveTocUpdate();
+
+      if (!pendingHeadingId) {
+        return;
+      }
+
+      window.clearTimeout(scrollSettleTimer);
+      scrollSettleTimer = window.setTimeout(clearPendingHeading, 160);
+    }
+
     function scheduleActiveTocUpdates() {
       window.setTimeout(updateActiveTocLink, 0);
       window.setTimeout(updateActiveTocLink, 80);
@@ -589,28 +610,82 @@
         return;
       }
 
-      rememberHeadingId(decodeHash(rawHash.slice(1)));
+      setPendingHeading(decodeHash(rawHash.slice(1)));
     }
 
-    function rememberHashLink(link) {
+    function rememberAnchorTarget(link) {
       var href = link.getAttribute('href') || '';
 
       if (href.charAt(0) !== '#') {
         return;
       }
 
-      rememberHeadingId(decodeHash(href.slice(1)));
+      setPendingHeading(decodeHash(href.slice(1)));
     }
 
-    function rememberHeadingId(id) {
+    function setPendingHeading(id) {
       var target = document.getElementById(id);
 
-      if (!target || !content.contains(target)) {
+      if (!target || headings.indexOf(target) === -1) {
         return;
       }
 
-      lockedHeadingId = id;
-      lockedUntil = Date.now() + 1200;
+      pendingHeadingId = id;
+      window.clearTimeout(pendingReleaseTimer);
+      pendingReleaseTimer = window.setTimeout(clearPendingHeading, 1200);
+    }
+
+    function getPendingHeading() {
+      var target = pendingHeadingId ? document.getElementById(pendingHeadingId) : null;
+
+      if (!target || headings.indexOf(target) === -1) {
+        clearPendingHeading();
+        return null;
+      }
+
+      return target;
+    }
+
+    function clearPendingHeading() {
+      if (!pendingHeadingId) {
+        return;
+      }
+
+      pendingHeadingId = null;
+      window.clearTimeout(pendingReleaseTimer);
+      window.clearTimeout(scrollSettleTimer);
+      pendingReleaseTimer = null;
+      scrollSettleTimer = null;
+      requestActiveTocUpdate();
+    }
+
+    function isScrollKey(key) {
+      return [
+        'ArrowDown',
+        'ArrowUp',
+        'End',
+        'Home',
+        'PageDown',
+        'PageUp',
+        ' '
+      ].indexOf(key) !== -1;
+    }
+
+    function observeTocState() {
+      if (!window.MutationObserver) {
+        return;
+      }
+
+      var observer = new MutationObserver(function () {
+        requestActiveTocUpdate();
+      });
+
+      observer.observe(toc, {
+        attributes: true,
+        attributeFilter: ['class'],
+        childList: true,
+        subtree: true
+      });
     }
 
     function findHashLink(element) {
@@ -640,18 +715,34 @@
       }
     }
 
-    function findParentItem(element) {
+    function findParentItems(element) {
+      var items = [];
       var current = element;
 
       while (current && current !== toc) {
         if (current.tagName && current.tagName.toLowerCase() === 'li') {
-          return current;
+          items.push(current);
         }
 
         current = current.parentNode;
       }
 
-      return null;
+      return items;
+    }
+
+    function findDirectChildList(item) {
+      return Array.prototype.slice.call(item.children).filter(function (child) {
+        return child.classList && child.classList.contains('toc-list');
+      })[0] || null;
+    }
+
+    function haveSameElements(first, second) {
+      return (
+        first.length === second.length &&
+        first.every(function (item) {
+          return second.indexOf(item) !== -1;
+        })
+      );
     }
   });
 </script>

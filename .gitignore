@@ -1,6 +1,6 @@
 *.code-workspace
 _site/
-docs/build/
+docs/
 .venv/
 .bundle/
 vendor/bundle/

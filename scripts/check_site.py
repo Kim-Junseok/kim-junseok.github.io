@@ -281,6 +281,7 @@ def check_toc_policy(site_root: Path) -> list[str]:
     expected_pages = (
         "publications/index.html",
         "posts/sionna-setup-guide/index.html",
+        "posts/uplink-power-control-basics/index.html",
     )
     excluded_pages = ("about/index.html",)
 
@@ -290,13 +291,51 @@ def check_toc_policy(site_root: Path) -> list[str]:
             content = page.read_text(encoding="utf-8")
             if TOC_MARKER not in content:
                 issues.append(f"{rel_path}: expected right-sidebar TOC is missing")
-            if PAGE_TOC_INIT_MARKER not in content:
-                issues.append(f"{rel_path}: page TOC initialization script is missing")
 
     for rel_path in excluded_pages:
         page = site_root / rel_path
         if page.exists() and TOC_MARKER in page.read_text(encoding="utf-8"):
             issues.append(f"{rel_path}: ABOUT page should not render the right-sidebar TOC")
+
+    for page in site_root.rglob("*.html"):
+        content = page.read_text(encoding="utf-8")
+
+        if TOC_MARKER not in content:
+            continue
+
+        rel_path = display_path(page, site_root)
+
+        if PAGE_TOC_INIT_MARKER not in content:
+            issues.append(f"{rel_path}: global TOC controller is missing")
+        if "observeTocState();" not in content:
+            issues.append(f"{rel_path}: TOC active-state synchronization is missing")
+        if "pendingHeadingId" not in content:
+            issues.append(f"{rel_path}: transient anchor targeting is missing")
+        if "window.addEventListener('scroll', handleScroll)" not in content:
+            issues.append(f"{rel_path}: scroll-driven TOC updates are missing")
+        if "activeBranchItems" not in content or "activeBranchLists" not in content:
+            issues.append(f"{rel_path}: active TOC branch expansion is missing")
+        if "list.classList.toggle('is-collapsed', shouldCollapse)" not in content:
+            issues.append(f"{rel_path}: inactive TOC branches are not collapsed")
+
+    return issues
+
+
+def check_math_rendering(site_root: Path) -> list[str]:
+    issues = []
+    rel_path = "posts/uplink-power-control-basics/index.html"
+    page = site_root / rel_path
+
+    if not page.exists():
+        return issues
+
+    content = page.read_text(encoding="utf-8")
+
+    if 'id="MathJax-script"' not in content:
+        issues.append(f"{rel_path}: MathJax is not enabled")
+
+    if 'class="language-math' in content:
+        issues.append(f"{rel_path}: math is rendered as a fenced code block")
 
     return issues
 
@@ -383,6 +422,7 @@ def main() -> int:
     issues.extend(check_code_block_wrappers(site_root, pages))
     issues.extend(check_topics_interactions(site_root))
     issues.extend(check_toc_policy(site_root))
+    issues.extend(check_math_rendering(site_root))
     url_issues, checked_urls = check_local_urls(site_root, pages)
     issues.extend(url_issues)
     issues.extend(check_external_anchors(site_root, pages))
