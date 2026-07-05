@@ -1,6 +1,6 @@
 ---
-title: "NR Uplink Power Control (1/3)"
-description: "Allocated resource blocks (RBs), power spectral density (PSD), the NR PUSCH power-control equation, and the relationship between P_EMAX and P_CMAX."
+title: "NR Power Headroom Report (1/3): Understanding Uplink Power Control"
+description: "How a UE turns an uplink grant into PUSCH transmit power—and what changes when it reaches its power limit."
 date: 2026-07-03
 math: true
 categories: [Cellular Systems, 5G NR]
@@ -15,7 +15,7 @@ tags:
 > **NR Uplink Power Control and PHR Series**
 >
 > 1. **Power Budget, PSD, and `P_CMAX`**
-> 2. What Does a Power Headroom Report Tell the gNB? — Coming soon
+> 2. [What Does a Power Headroom Report Tell the gNB?]({{ '/posts/nr-powerheadroom-report/' | relative_url }})
 > 3. How a gNB Scheduler Uses PHR — Coming soon
 
 To understand the Power Headroom Report (PHR), it helps to first understand how a UE calculates its uplink transmit power.
@@ -282,7 +282,7 @@ $$
 
 How, then, can the gNB determine how close the UE is to `P_CMAX`?
 
-That information is provided by the Power Headroom Report, which will be the subject of the next article in this series.
+That information is provided by the Power Headroom Report, which is the subject of the [next article]({{ '/posts/nr-powerheadroom-report/' | relative_url }}) in this series.
 
 ---
 
