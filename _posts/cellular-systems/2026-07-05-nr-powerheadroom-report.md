@@ -16,7 +16,7 @@ tags:
 >
 > 1. [Power Budget, PSD, and `P_CMAX`]({{ '/posts/uplink-power-control-basics/' | relative_url }})
 > 2. **What Does a Power Headroom Report Tell the gNB?**
-> 3. How a gNB Scheduler Uses PHR — Coming soon
+> 3. [How a gNB Scheduler Uses PHR]({{ '/posts/nr-phr-gnb-scheduling/' | relative_url }})
 
 In the [previous article]({{ '/posts/uplink-power-control-basics/' | relative_url }}), we summarized PUSCH transmit power with the following structure:
 
@@ -246,7 +246,7 @@ Before using PHR in a scheduler, keep at least these four distinctions in mind:
 3. PHR is event- or timer-driven, so it may be stale.
 4. The associated `P_CMAX` is not present in every report.
 
-The next article will examine how a gNB uses this information to evaluate candidate RB allocations and combine PHR with SINR, BLER, and BSR when making scheduling decisions.
+The [next article]({{ '/posts/nr-phr-gnb-scheduling/' | relative_url }}) examines how a gNB uses this information to evaluate candidate RB allocations and combine PHR with SINR, BLER, and BSR when making scheduling decisions.
 
 ---
 

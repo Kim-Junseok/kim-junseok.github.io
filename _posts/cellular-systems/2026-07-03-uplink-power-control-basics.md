@@ -16,7 +16,7 @@ tags:
 >
 > 1. **Power Budget, PSD, and `P_CMAX`**
 > 2. [What Does a Power Headroom Report Tell the gNB?]({{ '/posts/nr-powerheadroom-report/' | relative_url }})
-> 3. How a gNB Scheduler Uses PHR — Coming soon
+> 3. [How a gNB Scheduler Uses PHR]({{ '/posts/nr-phr-gnb-scheduling/' | relative_url }})
 
 To understand the Power Headroom Report (PHR), it helps to first understand how a UE calculates its uplink transmit power.
 
