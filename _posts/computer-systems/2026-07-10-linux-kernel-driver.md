@@ -57,7 +57,7 @@ When an application invokes one of these interfaces, execution enters kernel spa
 
 ## 4. Linux Kernel and Device Driver
 
-### 4-1. What Does a Linux Kernel Do?
+### 4.1 What Does Linux Kernel Do?
 
 The Linux kernel provides the system's core operating-system functions. The diagram highlights the following components:
 
@@ -69,7 +69,7 @@ The Linux kernel provides the system's core operating-system functions. The diag
 
 Among these components, the device driver is the part that directly interfaces with hardware. It translates a general request from user space into operations such as register access, buffer setup, interrupt handling, and error handling.
 
-### 4-2. What Does a Device Driver Do?
+### 4.2 What Does a Device Driver Do?
 
 The diagram summarizes the driver's responsibilities in five areas.
 
